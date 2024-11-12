@@ -241,4 +241,3 @@ if __name__ == '__main__':
     else:
         raise ValueError("Unknown dataset type in command line args: {}"
                 .format(args.dataset_type))
-

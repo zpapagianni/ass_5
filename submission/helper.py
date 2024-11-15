@@ -22,6 +22,8 @@ def initialize_perceiver_model(mconf, bottleneck_dim=32):
     ### [part g]: Make some other model here
 
     ### START CODE HERE
+    mconf.bottleneck_dim = bottleneck_dim
+    attention_model = GPT(mconf, variant="perceiver")
     ### END CODE HERE
     return attention_model
 
@@ -112,6 +114,23 @@ def pretrain(pretrain_dataset, block_size, model, pretrain_lr=6e-3, writer=None)
     tconf = None #TrainerConfig object (see trainer.py for more details)
 
     ### START CODE HERE
+    # Compute the final tokens based on dataset size and block size
+    final_tokens = 2 * len(pretrain_dataset) * block_size
+
+    # Define TrainerConfig with the required hyperparameters
+    tconf = TrainerConfig(
+        max_epochs=650,
+        batch_size=128,
+        learning_rate=pretrain_lr,
+        lr_decay=True,
+        warmup_tokens=512 * 20,
+        final_tokens=final_tokens,
+        num_workers=0,
+        writer=writer
+    )
+
+    # Initialize Trainer object
+    trainer_obj = Trainer(model, pretrain_dataset, None, tconf)
     ### END CODE HERE
     return tconf, trainer_obj
 
